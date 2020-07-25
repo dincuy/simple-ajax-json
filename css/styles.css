@@ -1,0 +1,4 @@
+/* invoked with pageCounter > 3 in main.js*/
+.hide-me {
+    display: none;
+}
