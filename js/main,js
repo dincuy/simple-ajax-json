@@ -1,0 +1,68 @@
+let pageCounter = 1;
+const animalContainer = document.getElementById("animal-info");
+const btn = document.getElementById("btn");
+
+//action after click btn
+btn.addEventListener("click", () => {
+    const ourRequest = new XMLHttpRequest();
+    //GET json file from the internet
+    ourRequest.open('GET', 'https://learnwebcode.github.io/json-example/animals-' + pageCounter + '.json');
+
+    ourRequest.onload = function () {
+        const ourData = JSON.parse(ourRequest.responseText); //change textplan to JSON
+        renderHTML(ourData);
+    }
+    //handle get with onload
+    // if (ourRequest.status >= 200 && ourRequest.status < 400){
+    //     ourRequest.onload = function () {
+    //         const ourData = JSON.parse(ourRequest.responseText); //change textplan to JSON
+    //         renderHTML(ourData);
+    //     }
+    // } else {
+    //     //if error load
+    //     console.log("We connected to the server, but returned an error");
+    // }
+
+
+
+    //handle if request connection error
+    ourRequest.onerror = function () {
+        console.log("Connection Error");
+    }
+
+    ourRequest.send(); //send req(open) to (onload)
+    pageCounter++;
+    //hide btn in html with adding class
+    if (pageCounter > 3) {
+        btn.classList.add("hide-me");
+    }
+})
+
+//data to display in html
+function renderHTML(data) {
+    let htmlString = "";
+
+    for (i = 0; i < data.length; i++) {
+        htmlString += "<p>" + data[i].name + " is a " + data[i].species + " that likes to eat ";
+
+        for (ii = 0; ii < data[i].foods.likes.length; ii++) {
+            if (ii == 0) {
+                htmlString += data[i].foods.likes[ii];
+            } else {
+                htmlString += " and " + data[i].foods.likes[ii];
+            }
+        }
+
+        htmlString += " and dislike ";
+        for (ii = 0; ii < data[i].foods.likes.length; ii++) {
+            if (ii == 0) {
+                htmlString += data[i].foods.dislikes[ii];
+            } else {
+                htmlString += " and " + data[i].foods.dislikes[ii] + "</p>";
+            }
+        }
+    }
+
+    //insert to html with "beforeend"
+    animalContainer.insertAdjacentHTML("beforeend", htmlString);
+}
